@@ -1,5 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Coffee } from './entities/coffee.entity';
+import { CreateCoffeeDto } from './dto/create-coffee.dto';
+import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 
 @Injectable()
 export class CoffeesService {
@@ -27,14 +29,15 @@ export class CoffeesService {
     return this.coffees;
   }
 
-  update(id: number, updateCoffeeDto: any) {
+  update(id: number, updateCoffeeDto: UpdateCoffeeDto) {
     const coffeeIndex = this.coffees.findIndex((c) => c.id === id);
-    if (coffeeIndex > -1) {
-      this.coffees[coffeeIndex] = {
-        ...this.coffees[coffeeIndex],
-        ...updateCoffeeDto,
-      };
+    if (coffeeIndex === -1) {
+      throw new NotFoundException(`Coffee whith id ${id} not found`);
     }
+    this.coffees[coffeeIndex] = {
+      ...this.coffees[coffeeIndex],
+      ...updateCoffeeDto,
+    };
     return this.coffees[coffeeIndex];
   }
 
